@@ -1,5 +1,5 @@
 ﻿using System.IO;
-
+using Core.Interfaces;
 using Infrastructure.Data;
 
 //using API.Extensions;
@@ -29,6 +29,7 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddAutoMapper(typeof(MappingProfiles));
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddControllers();
             services.AddDbContext<StoreContext>(x =>
                x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
