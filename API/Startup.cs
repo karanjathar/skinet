@@ -16,6 +16,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 //using StackExchange.Redis;
 using AutoMapper;
+using API.Middleware;
+using Microsoft.AspNetCore.Mvc;
+using API.Errors;
+using Microsoft.OpenApi.Models;
+using API.Extensions;
+
 namespace API
 {
     public class Startup
@@ -29,13 +35,19 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAutoMapper(typeof(MappingProfiles));
-            services.AddScoped<IProductRepository, ProductRepository>();
+            
 
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.AddControllers();
             services.AddDbContext<StoreContext>(x =>
                x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
+            services.AddSwaggerGen();
+
+            
+
+
+            
+
             //services.AddDbContext<AppIdentityDbContext>(x =>
             //{
             //    x.UseNpgsql(_config.GetConnectionString("IdentityConnection"));
@@ -61,9 +73,14 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-           // app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<ExceptionMiddleware>();
 
-          //  app.UseSwaggerDocumentation();
+          
+            if (env.IsDevelopment())
+            {
+                
+            }
+            app.UseSwaggerDocumentation();
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
